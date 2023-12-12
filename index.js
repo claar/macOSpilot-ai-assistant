@@ -23,12 +23,14 @@ ffmpeg.setFfmpegPath(ffmpegStatic);
 
 // // //  SET CONFIGS AND PLACEHOLDER VARIABLES // // //
 
-let openAiApiKey = store.get("userApiKey", "");
+require('dotenv').config();
+
+let openAiApiKey = store.get("userApiKey", process.env.USER_API_KEY ?? "");
 let openai = new OpenAI({
   apiKey: openAiApiKey,
 });
 
-const keyboardShortcut = "CommandOrControl+Shift+'"; // This is the keyboard shortcut that triggers the app
+const keyboardShortcut = process.env.KEYBOARD_SHORTCUT ?? "CommandOrControl+Shift+'"; // This is the keyboard shortcut that triggers the app
 
 const notificationWidth = 300; // Width of notification window
 const notificationHeight = 100; // Height of notification window
@@ -43,13 +45,14 @@ let notificationWindow;
 let conversationHistory = [
   {
     role: "system",
-    content:
+    content: process.env.PROMPT ??
       "You are helping users with questions about their OSX applications based on screenshots, always answer in at most one sentence.",
   },
 ];
 
-// Set to true if you intend to package the app, otherwise false.
-const useElectronPackager = false;
+// Set USE_ELECTRON_PACKAGER to true in your .env file if you intend to package the app. Default is false.
+const useElectronPackager = process.env.USE_ELECTRON_PACKAGER ? process.env.USE_ELECTRON_PACKAGER === 'true' : false;
+
 let tempFilesDir;
 // This decides what directory/storage strategy to use (local project or application folder)
 if (useElectronPackager) {
